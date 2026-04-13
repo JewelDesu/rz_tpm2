@@ -58,6 +58,8 @@ tpm2_evictcontrol -C o -c key.ctx 0x81000001
 ```
 
 ## Step 4: Generate Certificate
+make sure to change the device name from "my-device-001" to a prefered name, it will later be used in azure portal too.
+-subj "/CN=my-device-001" \ < Change the device name
 ```bash
 OPENSSL_MODULES=/usr/lib/ossl-modules openssl req -x509 \
   -provider tpm2 -provider default \
@@ -83,7 +85,7 @@ wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
 ## Step 7: Register Device in Azure Portal
 
 1. Go to IoT Hub > Devices > Add Device
-2. Device ID: my-device-001 / same as -subj "/CN=my-device-001" \
+2. Device ID: Your device id / example > my-device-001
 3. Authentication type: X.509 Self-Signed
 4. Primary thumbprint and Secondary thumbprint: paste fingerprint from Step 5
 5. Click Save
@@ -108,11 +110,11 @@ def remaining_length(n):
         if n == 0: break
     return bytes(out)
 
-HUB      = "ArnasTestHub.azure-devices.net"  # change to your hub
+HUB      = "ArnasTestHub.azure-devices.net"  # change to correct hub
 DEVICE   = "my-device-001"                   # change to your device ID
 USER     = "%s/%s/?api-version=2021-04-12" % (HUB, DEVICE)
 TOPIC    = "devices/%s/messages/events/" % DEVICE
-MESSAGE  = b'{"temperature": 25.3}'          # change to your payload
+MESSAGE  = b'{"temperature": 25.3}'          # message to be sent to the server
 
 payload = encode_str("MQTT") + bytes([4, 0x82]) + struct.pack('>H', 60)
 payload += encode_str(DEVICE) + encode_str(USER)
