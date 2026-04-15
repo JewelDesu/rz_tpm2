@@ -11,26 +11,9 @@ TPM Chip (hardware)
 ```
 
 The private key cannot be extracted, exported, or stolen even with full root access to the device. It is stored at a persistent handle "0x81000001"
-If at any poit the tpm board will be disconnected connections to Azure automatically wont work.
+If at any point the tpm board will be disconnected connections to Azure automatically wont work.
 
 ---
-
-SETUP:
-
-Yocto build requires meta-tpm2 layer with recipes:
-```
-tpm2-tss-engine tpm2-tss tpm2-totp tpm2-tools tpm2-pytss tpm2-pkcs11 tpm2-openssl tpm2-abrmd packagegroup-tpm2-initramfs packagegroup-tpm2
-```
-
-openembedded-core layer:
-```
-openssl
-```
-
-As well as meta-networking for mqtt:
-```
-mosquitto
-```
 
 ## Step 1: Create TPM2 Primary Key
 ```bash
@@ -77,21 +60,12 @@ openssl x509 -in /root/device.crt -noout -fingerprint -sha1 \
 ### Example output: 133E693916CD55ECB3F19F2D10E8C0FE600B92A4
 
 
-Step 6: Download Azure CA Certificate
+## Step 6: Download Azure CA Certificate
 ```bash
 wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
 ```
 
-## Step 7: Register Device in Azure Portal
-
-1. Go to IoT Hub > Devices > Add Device
-2. Device ID: Your device id / example > my-device-001
-3. Authentication type: X.509 Self-Signed
-4. Primary thumbprint and Secondary thumbprint: paste fingerprint from Step 5
-5. Click Save
-
-
-## Step 8: Prepare MQTT Packets
+## Step 7: Prepare MQTT Packets
 ```bash
 python3 << 'EOF'
 import struct
@@ -136,7 +110,7 @@ print("Message: %s" % MESSAGE.decode())
 EOF
 ```
 
-## Step 9: Send MQTT Message via TPM2
+## Step 8: Send MQTT Message via TPM2
 ```bash
 OPENSSL_MODULES=/usr/lib/ossl-modules openssl s_client \
   -connect ArnasTestHub.azure-devices.net:8883 \
