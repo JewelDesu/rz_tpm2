@@ -89,10 +89,10 @@ wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
 
 ## Step 7: Register Device in Azure Portal
 
-1. Go to IoT Hub > Devices > Add Device
+1. Go to IoT Hub > Device management > Devices > Add device
 2. Device ID: Your device id / example > my-device-001
 3. Authentication type: X.509 Self-Signed
-4. Primary thumbprint and Secondary thumbprint: paste fingerprint from Step 5
+4. Primary thumbprint and Secondary thumbprint: paste from Step 5
 5. Click Save
 
 
@@ -176,3 +176,15 @@ az iot hub monitor-events \
   --device-id my-device-001 \
   --timeout 30
 ```
+
+---
+## Go to IoT Hub
+![azure](assets/azure1.png)
+## Device management > Devices
+![azure](assets/azure2.png)
+## Add device
+![azure](assets/azure3.png)
+### Device ID: Your device id / example > my-device-001
+### Authentication type: X.509 Self-Signed
+### Primary thumbprint and Secondary thumbprint: paste from Step 5
+![azure](assets/azure4.png)
