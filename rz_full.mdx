@@ -97,6 +97,16 @@ wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
 
 
 ## Step 8: Prepare MQTT Packets
+
+### Change these values of MQTT packet constructor accordingly to your configuration:
+
+```bash
+HUB      = "ArnasTestHub.azure-devices.net"  # change to correct hub
+DEVICE   = "my-device-001"                   # change to your device ID
+USER     = "%s/%s/?api-version=2021-04-12" % (HUB, DEVICE)
+TOPIC    = "devices/%s/messages/events/" % DEVICE
+MESSAGE  = b'{"temperature": 25.3}'          # message to be sent to the server
+```
 ```bash
 python3 << 'EOF'
 import struct
@@ -115,11 +125,11 @@ def remaining_length(n):
         if n == 0: break
     return bytes(out)
 
-HUB      = "ArnasTestHub.azure-devices.net"  # change to your hub
-DEVICE   = "my-device-001"                   # change to your device ID
+HUB      = "ArnasTestHub.azure-devices.net"
+DEVICE   = "my-device-001"
 USER     = "%s/%s/?api-version=2021-04-12" % (HUB, DEVICE)
 TOPIC    = "devices/%s/messages/events/" % DEVICE
-MESSAGE  = b'{"temperature": 25.3}'          # change to your payload
+MESSAGE  = b'{"temperature": 25.3}'
 
 payload = encode_str("MQTT") + bytes([4, 0x82]) + struct.pack('>H', 60)
 payload += encode_str(DEVICE) + encode_str(USER)
@@ -140,6 +150,7 @@ print("Packets ready. Topic: %s" % TOPIC)
 print("Message: %s" % MESSAGE.decode())
 EOF
 ```
+After changing the values to your preferences paste this python MQTT packet constructor script to terminal.
 
 ## Step 9: Send MQTT Message via TPM2
 ```bash
