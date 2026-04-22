@@ -144,14 +144,24 @@ else:
 ```
 ---
 
-To verify if azure is getting the messages
-In azure shell:
+### To verify if azure is getting the messages
+
+Open azure shell
+
+![azure_shell](assets/azure_shell.png)
+
+Install IOT extension
 ```bash
 az extension add --name azure-iot
 ```
+
+![azure_shell1](assets/azure_shell1.png)
+
+Enable event monitor for a certain device
 ```bash
 az iot hub monitor-events \
   --hub-name ArnasTestHub \
   --device-id my-device-001 \
-  --timeout 30
+  --timeout 60
 ```
+![azure_shell2](assets/azure_shell2.png)
