@@ -62,86 +62,32 @@ openssl x509 -in /root/device.crt -noout -fingerprint -sha1 \
 
 ## Step 6: Download Azure CA Certificate
 ```bash
-wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem
+wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem -P ~/
 ```
 
-## Step 7: Prepare MQTT Packets
-
-### Change these values of MQTT packet constructor accordingly to your configuration:
+## Step 7: Download MQTT message sending application
 ```bash
-HUB      = "ArnasTestHub.azure-devices.net"  # change to correct hub
-DEVICE   = "my-device-001"                   # change to your device ID
-USER     = "%s/%s/?api-version=2021-04-12" % (HUB, DEVICE)
-TOPIC    = "devices/%s/messages/events/" % DEVICE
-MESSAGE  = b'{"temperature": 25.3}'          # message to be sent to the server
+https://github.com/JewelDesu/rz_tpm2/blob/main/send_mqtt.sh
+```
+
+## Step 8: Run the application
+
+```bash
+chmod +x /root/send_mqtt.sh
 ```
 ```bash
-python3 << 'EOF'
-import struct
-
-def encode_str(s):
-    b = s.encode()
-    return struct.pack('>H', len(b)) + b
-
-def remaining_length(n):
-    out = []
-    while True:
-        b = n % 128
-        n //= 128
-        if n > 0: b |= 0x80
-        out.append(b)
-        if n == 0: break
-    return bytes(out)
-
-HUB      = "ArnasTestHub.azure-devices.net"
-DEVICE   = "my-device-001"
-USER     = "%s/%s/?api-version=2021-04-12" % (HUB, DEVICE)
-TOPIC    = "devices/%s/messages/events/" % DEVICE
-MESSAGE  = b'{"temperature": 25.3}'
-
-payload = encode_str("MQTT") + bytes([4, 0x82]) + struct.pack('>H', 60)
-payload += encode_str(DEVICE) + encode_str(USER)
-connect_pkt = bytes([0x10]) + remaining_length(len(payload)) + payload
-
-pub_payload = encode_str(TOPIC) + MESSAGE
-publish_pkt = bytes([0x30]) + remaining_length(len(pub_payload)) + pub_payload
-disconnect_pkt = bytes([0xE0, 0x00])
-
-with open('/tmp/mqtt_connect.bin', 'wb') as f:
-    f.write(connect_pkt)
-with open('/tmp/mqtt_publish.bin', 'wb') as f:
-    f.write(publish_pkt)
-with open('/tmp/mqtt_disconnect.bin', 'wb') as f:
-    f.write(disconnect_pkt)
-
-print("Packets ready. Topic: %s" % TOPIC)
-print("Message: %s" % MESSAGE.decode())
-EOF
+./send_mqtt.sh
 ```
-After changing the values to your preferences paste this python MQTT packet constructor script to terminal.
 
-## Step 8: Send MQTT Message via TPM2
+Pressing Enter on prompt with default value uses the value shown in brackets
 ```bash
-OPENSSL_MODULES=/usr/lib/ossl-modules openssl s_client \
-  -connect ArnasTestHub.azure-devices.net:8883 \
-  -provider tpm2 -provider default \
-  -cert /root/device.crt \
-  -key "handle:0x81000001" \
-  -CAfile /root/DigiCertGlobalRootG2.crt.pem \
-  -quiet -ign_eof \
-  2>/dev/null \
-  < <(cat /tmp/mqtt_connect.bin && sleep 2 \
-      && cat /tmp/mqtt_publish.bin && sleep 3 \
-      && cat /tmp/mqtt_disconnect.bin && sleep 2) \
-  | python3 -c "
-import sys
-data = sys.stdin.buffer.read(4)
-if len(data) >= 4 and data[0] == 0x20 and data[3] == 0:
-    print('SUCCESS - message sent!')
-else:
-    print('FAILED: %s' % data.hex() if data else 'no response')
-"
+Device ID: my-device-001 # Name of the device
+Hub hostname [ArnasTestHub.azure-devices.net]: # Hub hostname
+Certificate path [/root/device.crt]: # Cert path
+Number of messages to send [1]: 5 # Number of messages to send
+Message payload [{'temperature': 25.0}]: {"id": {i}, "temp": 22.5} # Payload message
 ```
+
 ---
 
 ### To verify if azure is getting the messages
