@@ -74,7 +74,7 @@ open('/tmp/mqtt_disconnect.bin','wb').write(disconnect_pkt)
     -quiet -ign_eof \
     2>/dev/null \
     < <(cat /tmp/mqtt_connect.bin && sleep 2 \
-        && cat /tmp/mqtt_publish.bin && sleep 3 \
+        && cat /tmp/mqtt_publish.bin && sleep 6 \
         && cat /tmp/mqtt_disconnect.bin && sleep 2) \
     | python3 -c "
 import sys
