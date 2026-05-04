@@ -67,7 +67,7 @@ wget https://cacerts.digicert.com/DigiCertGlobalRootG2.crt.pem -P ~/
 
 ## Step 7: Download MQTT message sending application
 ```bash
-https://github.com/JewelDesu/rz_tpm2/blob/main/send_mqtt.sh
+wget https://github.com/JewelDesu/rz_tpm2/blob/main/send_mqtt.sh
 ```
 
 ## Step 8: Run the application
