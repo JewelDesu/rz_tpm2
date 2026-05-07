@@ -1,15 +1,16 @@
 #!/bin/sh
 
 #inputs
-DEVICE=${DEVICE:-my-device-001}
+DEVICE=${DEVICE:-my-device-001}  # Change to correct device name
+
+COUNT=${COUNT:-1}  # Number of times to send message
+
+
+
+
 
 HUB=${HUB:-ArnasTestHub.azure-devices.net}
-
 CERT=${CERT:-/root/device.crt}
-
-
-COUNT=${COUNT:-1}
-
 PAYLOAD=${PAYLOAD:-{'temperature': 25.0}}
 
 echo ""
