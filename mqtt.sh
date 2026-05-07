@@ -11,8 +11,7 @@ COUNT=${COUNT:-1}  # Number of times to send message
 
 HUB=${HUB:-ArnasTestHub.azure-devices.net}
 CERT=${CERT:-/root/device.crt}
-PAYLOAD=${PAYLOAD:-{'temperature': 25.0}}
-
+PAYLOAD=${PAYLOAD:-'{"temperature": 25.0}'}
 echo ""
 echo "Sending $COUNT message(s) as device '$DEVICE' to '$HUB'..."
 echo ""
