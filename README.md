@@ -74,13 +74,33 @@ DEVICE=${DEVICE:-my-device-001}  # Change to correct device name
 
 COUNT=${COUNT:-1}  # Number of times to send message
 ```
+### Option 1 - Inside the board
 ```bash
 vi send_mqtt.sh
 ```
-shift + a     // to start editing
+> i //to enter insert mode
 
-esc > shift + : > wq     // to save and quit VI
+> right click - paste entire text
 
+> ESC button then end :wq
+
+```bash
+vi send_mqtt.sh
+```
+> shift + a // to start editing
+
+> change your variables
+
+> ESC then :wq again
+
+### Option 2 - From host pc
+
+edit the file on host pc and send in to the board through network 
+```bash
+scp send_mqtt.sh root@<your_board_ip>
+```
+
+### Script
 ```bash
 #!/bin/sh
 
@@ -195,9 +215,6 @@ az extension add --name azure-iot
 
 Enable event monitor for a certain device
 ```bash
-az iot hub monitor-events \
-  --hub-name ArnasTestHub \
-  --device-id my-device-001 \
-  --timeout 60
+az iot hub monitor-events --hub-name ArnasTestHub --output table
 ```
 ![azure_shell2](assets/azure_shell2.png)
